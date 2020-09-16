@@ -1,16 +1,30 @@
-f = open("rosalind_fib.txt", "r")
-s = f.read()
-f.close()
+'''
+Rabbits and Recurrence Relations
+http://rosalind.info/problems/fib/
 
-slist = [int(x) for x in s.split(" ")]
+Given: Positive integers n≤40 and k≤5.
 
-n = slist[0] # months
-k = slist[1] # litter pairs
+Return: The total number of rabbit pairs that will be present after n months, if we begin with 1 pair and in each generation, every pair of reproduction-age rabbits produces a litter of k rabbit pairs (instead of only 1 pair).
+'''
+filename = 'rosalind_fib.txt'
 
-fn = [1,1]
+def fib_rabbits(n, k):
+	prev, curr = 1, 1
+	for _ in range(2, n):
+		prev, curr = curr, k * prev + curr
+	return curr
+	# alternatively, keep full list in memory:
+	# fib = [1, 1]
+	# for i in range(2, n):
+	# 	fib.append(k * fib[i-2]  fib[i-1])
+	# return fib[-1]
 
-for i in range(2,n):
-	fn.append(k * fn[i-2] + fn[i-1])
+def main():
+	with open(filename) as f:
+		line = f.readline().strip()
+	# months, litter size
+	n, k = (int(i) for i in line.split(' '))
+	print(fib_rabbits(n, k))
 
-
-print fn[n-1]
+if __name__ == '__main__':
+	main()

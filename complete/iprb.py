@@ -1,23 +1,27 @@
-f = open("rosalind_iprb.txt", "r")
-s = f.read()
-f.close()
+'''
+Mendel's First Law
+http://rosalind.info/problems/iprb/
 
-slist = [int(x) for x in s.split(" ")]
-#print slist
+Given: Three positive integers k, m, and n, representing a population containing k+m+n organisms: k individuals are homozygous dominant for a factor, m are heterozygous, and n are homozygous recessive.
 
-homod = slist[0]
-het = slist[1]
-homor = slist[2]
-tot = homod + het + homor
+Return: The probability that two randomly selected mating organisms will produce an individual possessing a dominant allele (and thus displaying the dominant phenotype). Assume that any two organisms can mate.
+'''
+filename = 'rosalind_iprb.txt'
 
-#calc num rec
-a = 0.25 * het * (het - 1) # het het
-b = 0.5 * 2 * het * homor # het homor
-c = 1.0 * homor * (homor - 1) # homor homor
+def p_dominant(k, m, n):
+	population = k + m + n
+	# calculate 1 - P(homozygous recessive)
+	x = (0.5 ** 2) * m * (m - 1)	# heterozygous x heterozygous
+	y = 1 * 0.5 * 2 * m * n			# heterozygous x homozygous recessive
+	z = (1 ** 2) * n * (n - 1)			# homozygous recessive x homozygous recessive
+	return 1 - ((x + y + z) / (population * (population - 1)))
 
-# print((a+b+c)/(tot*(tot-1))
-print(a)
-print(b)
-print(c)
-
-print(1-((a+b+c)/(tot*(tot-1))))
+def main():
+	with open(filename) as f:
+		line = f.readline().strip()
+	# homozygous dominant, heterozygous, homozygous recessive
+	k, m, n = (int(i) for i in line.split(' '))
+	print(p_dominant(k, m, n))
+	
+if __name__ == '__main__':
+	main()

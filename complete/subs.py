@@ -1,17 +1,26 @@
-f = open("rosalind_subs.txt", "r")
-s = f.read()
-f.close()
+'''
+Finding a Motif in DNA
+http://rosalind.info/problems/subs/
 
-slist = s.split("\n")
+Given: Two DNA strings s and t (each of length at most 1 kbp).
 
-s = slist[0]
-t = slist[1]
+Return: All locations of t as a substring of s.
+'''
+filename = 'rosalind_subs.txt'
 
-loc=[]
+def substring_locations(s, t):
+	# alternatively could be done with any number of string index/regex methods
+	locations = []
+	for i in range(len(s) - len(t)):
+		if s[i : i+len(t)] == t:
+			locations.append(i + 1)
+	return locations
 
-for i in range(len(s) - len(t)):
-	if s[i:i+len(t)] == t:
-		loc.append(str(i+1))
+def main():
+	with open(filename) as f:
+		s = f.readline().strip()
+		t = f.readline().strip()
+	print(' '.join([str(i) for i in substring_locations(s, t)]))
 
-
-print " ".join(loc)
+if __name__ =='__main__':
+	main()
