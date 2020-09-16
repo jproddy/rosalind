@@ -1,32 +1,22 @@
-m={
-"A": 71.03711,
-"C": 103.00919,
-"D": 115.02694,
-"E": 129.04259,
-"F": 147.06841,
-"G": 57.02146,
-"H": 137.05891,
-"I": 113.08406,
-"K": 128.09496,
-"L": 113.08406,
-"M": 131.04049,
-"N": 114.04293,
-"P": 97.05276,
-"Q": 128.05858,
-"R": 156.10111,
-"S": 87.03203,
-"T": 101.04768,
-"V": 99.06841,
-"W": 186.07931,
-"Y": 163.06333,}
+'''
+Calculating Protein Mass
+http://rosalind.info/problems/prtm/
 
-f = open("rosalind_prtm.txt", "r")
-p = f.read().strip()
-f.close()
+Given: A protein string P of length at most 1000 aa.
 
-mass = 0
+Return: The total weight of P. Consult the monoisotopic mass table.
+'''
+from utils.monoisotopic_mass_table import mmt
 
-for i in p:
-	mass += m[i]
+filename = 'rosalind_prtm.txt'
 
-print mass
+def calc_protein_mass(protein):
+	return sum([mmt[aa] for aa in protein])
+
+def main():
+	with open(filename) as f:
+		protein = f.readline().strip()
+	print(calc_protein_mass(protein))
+
+if __name__ == '__main__':
+	main()

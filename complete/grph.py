@@ -1,16 +1,28 @@
-from itertools import groupby
-with open("rosalind_grph.txt") as f:
-    groups = groupby(f, key=lambda x: not x.startswith(">"))
-    d = {}
-    for k,v in groups:
-        if not k:
-            key, val = list(v)[0].rstrip(), "".join(map(str.rstrip,next(groups)[1],""))
-            d[key] = val
-f.close()
+'''
+Overlap Graphs
+http://rosalind.info/problems/grph/
 
-for i in d.keys():
-	for j in d.keys():
-		if i != j:
-			l = len(d[i])
-			if(d[i][l-3:] == d[j][:3]):
-				print i[1:] + " " + j[1:]
+Given: A collection of DNA strings in FASTA format having total length at most 10 kbp.
+
+Return: The adjacency list corresponding to O3. You may return edges in any order.
+'''
+from utils.parse_fasta import parse_fasta_as_dict
+
+filename = 'rosalind_grph.txt'
+
+def adjacency_list_o3(dnas):
+	overlaps = []
+	for key1, dna1 in dnas.items():
+		for key2, dna2 in dnas.items():
+			if key1 != key2 and dna1[-3:] == dna2[:3]:
+				overlaps.append((key1, key2))
+	return overlaps
+
+def main():
+	with open(filename) as f:
+		fasta = f.read()
+	dnas = parse_fasta_as_dict(fasta)
+	print('\n'.join([' '.join(pair) for pair in adjacency_list_o3(dnas)]))
+
+if __name__ == '__main__':
+	main()

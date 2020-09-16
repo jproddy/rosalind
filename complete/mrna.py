@@ -1,35 +1,27 @@
-codon={
-"UUU":"F", "CUU": "L", "AUU":"I", "GUU": "V",
-"UUC":"F", "CUC": "L", "AUC":"I", "GUC": "V",
-"UUA":"L", "CUA": "L", "AUA":"I", "GUA": "V",
-"UUG":"L", "CUG": "L", "AUG":"M", "GUG": "V",
-"UCU":"S", "CCU": "P", "ACU":"T", "GCU": "A",
-"UCC":"S", "CCC": "P", "ACC":"T", "GCC": "A",
-"UCA":"S", "CCA": "P", "ACA":"T", "GCA": "A",
-"UCG":"S", "CCG": "P", "ACG":"T", "GCG": "A",
-"UAU":"Y", "CAU": "H", "AAU":"N", "GAU": "D",
-"UAC":"Y", "CAC": "H", "AAC":"N", "GAC": "D",
-"UAA":"Stop", "CAA": "Q", "AAA":"K", "GAA": "E",
-"UAG":"Stop", "CAG": "Q", "AAG":"K", "GAG": "E",
-"UGU":"C", "CGU": "R", "AGU":"S", "GGU": "G",
-"UGC":"C", "CGC": "R", "AGC":"S", "GGC": "G",
-"UGA":"Stop", "CGA": "R", "AGA":"R", "GGA": "G",
-"UGG":"W", "CGG": "R", "AGG":"R", "GGG": "G"
-}
+'''
+Inferring mRNA from Protein
+http://rosalind.info/problems/mrna/
 
-f = open("rosalind_mrna.txt", "r")
-dna = f.read().strip()
-f.close()
+Given: A protein string of length at most 1000 aa.
 
-count={}
+Return: The total number of different RNA strings from which the protein could have been translated, modulo 1,000,000. (Don't neglect the importance of the stop codon in protein translation.)
+'''
+from collections import Counter
+from utils.codon_table import codons
 
-for v in codon.values():
-	if v not in count:
-		count[v] = codon.values().count(v)
+filename = 'rosalind_mrna.txt'
 
-potential = 3 #for the STOP
-for i in dna:
-	potential *= count[i]
-	potential = potential % 1000000
+def n_valid_rna(protein):
+	codon_counter = Counter(codons.values())
+	n_valid = 3 # 3 Stop codons
+	for aa in protein:
+		n_valid *= codon_counter[aa]
+	return n_valid
 
-print potential
+def main():
+	with open(filename) as f:
+		protein = f.readline().strip()
+	print(n_valid_rna(protein) % 1000000)
+
+if __name__ == '__main__':
+	main()
