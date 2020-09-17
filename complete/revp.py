@@ -1,34 +1,30 @@
-from itertools import groupby
-with open("rosalind_revp.txt") as f:
-    groups = groupby(f, key=lambda x: not x.startswith(">"))
-    d = {}
-    for k,v in groups:
-        if not k:
-            key, val = list(v)[0].rstrip(), "".join(map(str.rstrip,next(groups)[1],""))
-            d[key] = val
-f.close()
+'''
+Locating Restriction Sites
+http://rosalind.info/problems/revp/
 
+Given: A DNA string of length at most 1 kbp in FASTA format.
 
-def revc(s):
-	sc=""
-	for base in range(len(s)):
-		n = len(s) - base - 1
-		if s[n] == "A":
-			sc += "T"
-		elif s[n] == "C":
-			sc += "G"
-		elif s[n] == "G":
-			sc += "C"
-		else:
-			sc += "A"
-	return sc
+Return: The position and length of every reverse palindrome in the string having length between 4 and 12. You may return these pairs in any order.
+'''
+from utils.parse_fasta import parse_fasta_as_list
+import revc
 
+filename = 'rosalind_revp.txt'
 
+def reverse_palindromes(dna):
+	sites = []
+	for length in range(4, 13):
+		for start in range(0, len(dna) - length + 1):
+			segment = dna[start:start+length]
+			if segment == revc.reverse_complement(segment):
+				sites.append((start+1, length))
+	return sites
 
-s = d.values()[0]
+def main():
+	with open(filename) as f:
+		fasta = f.read()
+	dna = parse_fasta_as_list(fasta)[0]
+	print('\n'.join([' '.join(str(i) for i in site) for site in reverse_palindromes(dna)]))
 
-for i in range(4, 21):
-	for j in range(len(s)):
-		if i + j < len(s) + 1:
-			if s[j:j+i] == revc(s[j:j+i]):
-				print str(j+1) + " " + str(i)
+if __name__ == '__main__':
+	main()

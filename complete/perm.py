@@ -1,15 +1,39 @@
+'''
+Enumerating Gene Orders
+http://rosalind.info/problems/perm/
+
+Given: A positive integer n≤7.
+
+Return: The total number of permutations of length n, followed by a list of all such permutations (in any order).
+'''
 from itertools import permutations
 
-f = open("rosalind_perm.txt", "r")
-s = f.read()
-f.close()
+filename = 'rosalind_perm.txt'
 
-num = [int(x) for x in s.split(" ")]
+def perm(n):
+	return list(permutations(range(1, n+1)))
+	# alternatively, heap's algorithm:
+	# perms = []
+	# def helper(k, arr):
+	# 	if k == 1:
+	# 		perms.append(arr.copy())
+	# 	else:
+	# 		helper(k-1, arr)
+	# 		for i in range(k-1):
+	# 			if k & 1:
+	# 				arr[0], arr[-1] = arr[-1], arr[0]
+	# 			else:
+	# 				arr[i], arr[-1] = arr[-1], arr[i]
+	# 			helper(k-1, arr)		
+	# helper(n, list(range(1, n+1)))
+	# return perms
 
-perm = permutations(range(1, num[0]+1))
-p = list(perm)
+def main():
+	with open(filename) as f:
+		n = int(f.readline().strip())
+	perms = perm(n)
+	print(len(perms))
+	print('\n'.join([' '.join(str(n) for n in i) for i in perms]))
 
-print len(p)
-
-for i in range(len(p)):
-	print ' '.join(map(str, p[i]))
+if __name__ == '__main__':
+	main()

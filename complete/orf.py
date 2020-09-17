@@ -1,82 +1,40 @@
-codon={											#s=STOP
-"UUU":"F", "CUU": "L", "AUU":"I", "GUU": "V",
-"UUC":"F", "CUC": "L", "AUC":"I", "GUC": "V",
-"UUA":"L", "CUA": "L", "AUA":"I", "GUA": "V",
-"UUG":"L", "CUG": "L", "AUG":"M", "GUG": "V",
-"UCU":"S", "CCU": "P", "ACU":"T", "GCU": "A",
-"UCC":"S", "CCC": "P", "ACC":"T", "GCC": "A",
-"UCA":"S", "CCA": "P", "ACA":"T", "GCA": "A",
-"UCG":"S", "CCG": "P", "ACG":"T", "GCG": "A",
-"UAU":"Y", "CAU": "H", "AAU":"N", "GAU": "D",
-"UAC":"Y", "CAC": "H", "AAC":"N", "GAC": "D",
-"UAA":"s", "CAA": "Q", "AAA":"K", "GAA": "E",
-"UAG":"s", "CAG": "Q", "AAG":"K", "GAG": "E",
-"UGU":"C", "CGU": "R", "AGU":"S", "GGU": "G",
-"UGC":"C", "CGC": "R", "AGC":"S", "GGC": "G",
-"UGA":"s", "CGA": "R", "AGA":"R", "GGA": "G",
-"UGG":"W", "CGG": "R", "AGG":"R", "GGG": "G"
-}
+'''
+Open Reading Frames
+http://rosalind.info/problems/orf/
 
-from itertools import groupby
-with open("rosalind_orf.txt") as f:
-    groups = groupby(f, key=lambda x: not x.startswith(">"))
-    d = {}
-    for k,v in groups:
-        if not k:
-            key, val = list(v)[0].rstrip(), "".join(map(str.rstrip,next(groups)[1],""))
-            d[key] = val
-f.close()
+Given: A DNA string s of length at most 1 kbp in FASTA format.
 
-def revc(s):		#reverse complement
-	sc = ""
-	for base in range(len(s)):
-		n = len(s) - base - 1
-		if s[n] == "A":
-			sc += "T"
-		elif s[n] == "C":
-			sc += "G"
-		elif s[n] == "G":
-			sc += "C"
-		else:
-			sc += "A"
-	return sc
+Return: Every distinct candidate protein string that can be translated from ORFs of s. Strings can be returned in any order.
+'''
+from utils.parse_fasta import parse_fasta_as_list
+from utils.codon_table import codons_star_stop
+import rna, revc, prot
 
-def torna(dna):
-	rna = ""
-	for base in range(len(dna)):
-		if dna[base] == "T":
-			rna += "U"
-		else:
-			rna += dna[base]
-	return rna
+filename = 'rosalind_orf.txt'
 
-s = d.values()[0]
-t = revc(s)
+def open_reading_frames(dna_):
+	dnac = revc.reverse_complement(dna_)
+	rna_ = rna.convert_to_rna(dna_)
+	rnac = rna.convert_to_rna(dnac)
+	proteins = []
+	for i in range(3):
+		proteins.append(prot.translate(rna_[i:], stop='*'))
+		proteins.append(prot.translate(rnac[i:], stop='*'))
+	candidates = []
+	for protein in proteins:
+		for i, aa in enumerate(protein):
+			if aa == 'M':
+				for j, aa_stop in enumerate(protein[i+1:]):
+					if aa_stop == '*':
+						candidates.append(protein[i:i+j+1])
+						break
+	return set(candidates)
 
-prots = []
-candidates = []
-srna = torna(s)
-trna = torna(t)
+def main():
+	with open(filename) as f:
+		fasta = f.read()
+	dna = parse_fasta_as_list(fasta)[0]
+	print('\n'.join(open_reading_frames(dna)))
 
-for j in range(0, 3):
-	temp = srna[j:]
-	prots.append("")
-	for i in range(len(temp)/3):
-		prots[j] += codon[temp[3*i:3*i+3]]
-for j in range(0, 3):
-	temp = trna[j:]
-	prots.append("")
-	for i in range(len(temp)/3):
-		prots[j+3] += codon[temp[3*i:3*i+3]]
-
-for i in range(len(prots)):
-	for j in range(len(prots[i])):
-		if prots[i][j] == "M":
-			for k in range(j+1, len(prots[i])):
-				if prots[i][k] == "s" and prots[i][j:k] not in candidates and "s" not in prots[i][j:k]: #something ugly af here
-					candidates.append(prots[i][j:k])
-					break
-
-candidates.sort()
-for i in candidates:
-	print i
+if __name__ == '__main__':
+	main()

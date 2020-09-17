@@ -1,65 +1,39 @@
-from itertools import groupby
-with open("rosalind_cons.txt") as f:
-    groups = groupby(f, key=lambda x: not x.startswith(">"))
-    d = {}
-    for k,v in groups:
-        if not k:
-            key, val = list(v)[0].rstrip(), "".join(map(str.rstrip,next(groups)[1],""))
-            d[key] = val
-f.close()
+'''
+Consensus and Profile
+http://rosalind.info/problems/cons/
 
-l=len(d.values()[1])
+Given: A collection of at most 10 DNA strings of equal length (at most 1 kbp) in FASTA format.
 
-bps={
-"A":[0] * l,
-"C":[0] * l,
-"G":[0] * l,
-"T":[0] * l,
-}
+Return: A consensus string and profile matrix for the collection. (If several possible consensus strings exist, then you may return any one of them.)
+'''
+import numpy as np
+from utils.parse_fasta import parse_fasta_as_list
 
-for i in d.keys():
-	for j in range(len(d[i])):
-		bps[d[i][j]][j] += 1
+filename = 'rosalind_cons.txt'
 
-consnum = []
-for i in range(len(bps["A"])):
-	consnum.append(bps["A"][i])
+def consensus_and_profile(dnas):
+	arr = np.array([list(dna) for dna in dnas])
+	a = (arr == 'A').sum(axis=0)
+	c = (arr == 'C').sum(axis=0)
+	g = (arr == 'G').sum(axis=0)
+	t = (arr == 'T').sum(axis=0)
+	maxes = np.array([a, c, g, t]).max(axis=0)
+	consensus = np.where(a == maxes, 'A', \
+					np.where(c == maxes, 'C', \
+					np.where(g == maxes, 'G', 'T')))
+	return a, c, g, t, consensus
 
-conslett = ""
-for j in range(l):
-	temp = "A"
-	for i in range(1, 4):
-		if bps.values()[i][j] > consnum[j]:
-			consnum[j] = bps.values()[i][j]
-			temp = bps.keys()[i]
-	conslett += temp
-
-print conslett
-
-a = ""
-for i in range(l):
-	a += str(bps["A"][i]) + " "
-print "A: " + a
-
-c = ""
-for i in range(l):
-	c += str(bps["C"][i]) + " "
-print "C: " + c
-
-g=""
-for i in range(l):
-	g += str(bps["G"][i]) + " "
-print "G: " + g
-
-t=""
-for i in range(l):
-	t += str(bps["T"][i]) + " "
-print "T: " + t
+def main():
+	with open(filename) as f:
+		fasta = f.read()
+	dnas = parse_fasta_as_list(fasta)
+	a, c, g, t, consensus = consensus_and_profile(dnas)
+	print(''.join(consensus))
+	print('A:', ' '.join([str(i) for i in a]))
+	print('C:', ' '.join([str(i) for i in c]))
+	print('G:', ' '.join([str(i) for i in g]))
+	print('T:', ' '.join([str(i) for i in t]))
 
 
-
-
-
-
-
-
+if __name__ == '__main__':
+	main()
