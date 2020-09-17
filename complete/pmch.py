@@ -1,15 +1,24 @@
-f = open("rosalind_pmch.txt", "r")
-s = f.read()
-f.close()
+'''
+Perfect Matchings and RNA Secondary Structures
+http://rosalind.info/problems/pmch/
 
-a = s.count("A")
-c = s.count("C")
+Given: An RNA string s of length at most 80 bp having the same number of occurrences of 'A' as 'U' and the same number of occurrences of 'C' as 'G'.
 
-perf = 1
+Return: The total possible number of perfect matchings of basepair edges in the bonding graph of s.
+'''
+from math import factorial
+from utils.parse_fasta import parse_fasta_as_list
 
-for i in range(1, a+1):
-	perf *= i
-for i in range(1, c+1):
-	perf *= i
+filename = 'rosalind_pmch.txt'
 
-print perf
+def perfect_matchings(rna):
+	return factorial(rna.count('A')) * factorial(rna.count('C'))
+
+def main():
+	with open(filename) as f:
+		fasta = f.read()
+	rna = parse_fasta_as_list(fasta)[0]
+	print(perfect_matchings(rna))
+
+if __name__ == '__main__':
+	main()

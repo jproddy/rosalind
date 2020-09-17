@@ -1,23 +1,28 @@
+'''
+Introduction to Random Strings
+http://rosalind.info/problems/prob/
+
+Given: A DNA string s of length at most 100 bp and an array A containing at most 20 numbers between 0 and 1.
+
+Return: An array B having the same length as A in which B[k] represents the common logarithm of the probability that a random string constructed with the GC-content found in A[k] will match s exactly.
+'''
+from collections import Counter
 import math
 
-f = open("rosalind_prob.txt", "r")
-lines = f.readlines()
-f.close()
+filename = 'rosalind_prob.txt'
 
-s = lines[0].strip() # dna string
-A = [float(x) for x in lines[1].strip().split(" ")] # GC content array
+def prob(dna, A):
+	base_counter = Counter(dna)
+	at = base_counter['A'] + base_counter['T']
+	cg = base_counter['C'] + base_counter['G']
+	return [math.log10(((i/2) ** cg) * (((1-i)/2) ** at)) for i in A]
 
-cg = s.count("C") + s.count("G")
-at = s.count("A") + s.count("T")
 
-B = [] # return prob
+def main():
+	with open(filename) as f:
+		dna = f.readline().strip()
+		A = [float(i) for i in f.readline().strip().split()]
+	print(' '.join([str(i) for i in prob(dna, A)]))
 
-for i in range(len(A)):
-	B.append(math.log10((A[i]/2)**cg * ((1-A[i])/2)**at))
-
-s = ""
-
-for i in range(len(B)):
-	s += str(B[i]) + " "
-
-print s
+if __name__ == '__main__':
+	main()

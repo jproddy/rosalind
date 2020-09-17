@@ -1,16 +1,24 @@
-f = open("rosalind_pper.txt", "r")
-s = f.read()
-f.close()
+'''
+Partial Permutations
+http://rosalind.info/problems/pper/
 
-slist = [int(x) for x in s.split(" ")]
+Given: Positive integers n and k such that 100≥n>0 and 10≥k>0.
 
-t = slist[0] #total
-s = slist[1] #subset
+Return: The total number of partial permutations P(n,k), modulo 1,000,000
+'''
+from functools import reduce
 
-pper = 1
+filename = 'rosalind_pper.txt'
 
-for i in range(t-s+1, t+1):
-	pper *= i
-	pper = pper % 1000000
+def partial_permutations(n, k):
+	# n! / (n-k)!
+	return reduce(lambda x, y: x * y, range(n-k+1, n+1), 1)
 
-print pper
+def main():
+	with open(filename) as f:
+		line = f.readline()
+	n, k = [int(i) for i in line.split()]
+	print(partial_permutations(n, k) % 1000000)
+
+if __name__ == '__main__':
+	main()
