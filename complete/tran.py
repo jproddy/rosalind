@@ -1,26 +1,30 @@
-from itertools import groupby
-with open("rosalind_tran.txt") as f:
-    groups = groupby(f, key=lambda x: not x.startswith(">"))
-    d = {}
-    for k,v in groups:
-        if not k:
-            key, val = list(v)[0].rstrip(), "".join(map(str.rstrip,next(groups)[1],""))
-            d[key] = val
-f.close()
+'''
+Transitions and Transversions
+http://rosalind.info/problems/tran/
 
-s1 = d.values()[0]
-s2 = d.values()[1]
+Given: Two DNA strings s1 and s2 of equal length (at most 1 kbp).
 
-pur = ["A","G"]
-pyr = ["T","C"]
-transitions = 0.0
-transversions = 0.0
+Return: The transition/transversion ratio R(s1,s2).
+'''
+from utils.parse_fasta import parse_fasta_as_list
 
-for i in range(len(s1)):
-	if s1[i] != s2[i]:
-		if (s1[i] in pur and s2[i] in pur) or (s1[i] in pyr and s2[i] in pyr):
-			transitions += 1
-		else:
-			transversions += 1
+filename = 'rosalind_tran.txt'
 
-print transitions / transversions
+def transition_transversion_ratio(s1, s2):
+	purines = ['A', 'G']
+	pyrimidines = ['T', 'C']
+	transitions = []
+	for i, j in zip(s1, s2):
+		if i != j:
+			# ignores matches, appends True if transition, False if transversion
+			transitions.append((i in purines and j in purines) or (i in pyrimidines and j in pyrimidines))
+	return sum(transitions) / (len(transitions) - sum(transitions))
+
+def main():
+	with open(filename) as f:
+		fasta = f.read()
+	s1, s2 = parse_fasta_as_list(fasta)
+	print(transition_transversion_ratio(s1, s2))
+
+if __name__ == '__main__':
+	main()

@@ -1,28 +1,30 @@
-from itertools import groupby
-with open("rosalind_sseq.txt") as f:
-    groups = groupby(f, key=lambda x: not x.startswith(">"))
-    d = {}
-    for k,v in groups:
-        if not k:
-            key, val = list(v)[0].rstrip(), "".join(map(str.rstrip,next(groups)[1],""))
-            d[key] = val
-f.close()
+'''
+Finding a Spliced Motif
+http://rosalind.info/problems/sseq/
 
-s = d.values()[1]		#full string
-t = d.values()[0]		#substring
-ind = []
-# print s
-# print t
+Given: Two DNA strings s and t (each of length at most 1 kbp) in FASTA format.
 
-tindex = 0
+Return: One collection of indices of s in which the symbols of t appear as a subsequence of s. If multiple solutions exist, you may return any one.
+'''
+from utils.parse_fasta import parse_fasta_as_list
 
-for i in range(len(s)):
-	print i
-	if s[i] == t[tindex]:
-		ind.append(i+1)
-		tindex += 1
-	if tindex == len(t):
-		break
+filename = 'rosalind_sseq.txt'
 
-# print ind
-print ' '.join(map(str, ind))
+def spliced_indices(s, t):
+	indices = []
+	t_i, s_i = 0, 0
+	while t_i < len(t):
+		if t[t_i] == s[s_i]:
+			indices.append(s_i + 1)
+			t_i += 1
+		s_i += 1
+	return indices
+
+def main():
+	with open(filename) as f:
+		fasta = f.read()
+	s, t = parse_fasta_as_list(fasta)
+	print(' '.join([str(i) for i in spliced_indices(s, t)]))
+
+if __name__ == '__main__':
+	main()

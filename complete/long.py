@@ -8,28 +8,13 @@ The dataset is guaranteed to satisfy the following condition: there exists a uni
 
 Return: A shortest superstring containing all the given strings (thus corresponding to a reconstructed chromosome).
 '''
+from utils.parse_fasta import parse_fasta_as_list
 
 filename = 'rosalind_long.txt'
 
-def parse_fafsa(filename):
-	strands = []
-	curr_strand = ''
-	with open(filename) as f:
-		lines = f.readlines()
-	lines = [line.strip() for line in lines]
-	for line in lines:
-		if line[0] != '>':
-			curr_strand += line
-		elif line[0] == '>' and curr_strand:
-			strands.append(curr_strand)
-			curr_strand = ''
-	curr_strand += line[-1]
-	strands.append(curr_strand)
-	return strands
-
-def align_strands(strands):
-	dna = strands[0]
-	strands = strands[1:]
+def align_strands(dnas):
+	dna = dnas[0]
+	strands = dnas[1:]
 	while strands:
 		for i, s in enumerate(strands):
 			break_loop = False
@@ -49,12 +34,11 @@ def align_strands(strands):
 				break
 	return dna
 
-
 def main():
-	strands = parse_fafsa(filename)
-	dna = align_strands(strands)
-	print(dna)
-
+	with open(filename) as f:
+		fasta = f.read()
+	dnas = parse_fasta_as_list(fasta)
+	print(align_strands(dnas))
 
 if __name__ == '__main__':
 	main()
