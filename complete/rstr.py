@@ -1,13 +1,27 @@
-f = open("rosalind_rstr_2_dataset.txt", "r")
-lines = f.readlines()
-f.close()
+'''
+Matching Random Motifs
+http://rosalind.info/problems/rstr/
 
-nums = lines[0].split(" ")
+Given: A positive integer N≤100000, a number x between 0 and 1, and a DNA string s of length at most 10 bp.
 
-n = int(nums[0]) # number of random strings
-gc = float(nums[1]) # GC content
-s = lines[1].strip() # desired DNA string
+Return: The probability that if N random DNA strings having the same length as s are constructed with GC-content x (see “Introduction to Random Strings”), then at least one of the strings equals s. We allow for the same random string to be created more than once.
+'''
+from collections import Counter
 
-at = s.count("A") + s.count("T")
+filename = 'rosalind_rstr.txt'
 
-print 1 - (1 - ((1-gc)/2)**at * (gc/2)**(len(s)-at)) ** n
+def p_random_strings(n, x, dna):
+	count = Counter(dna)
+	gc = count['G'] + count['C']
+	at = count['A'] + count['T']
+	return 1 - (1 - ((1-x)/2)**at * (x/2)**(gc)) ** n
+
+def main():
+	with open(filename) as f:
+		line = f.readline().strip().split()
+		dna = f.readline().strip()
+	n, x = int(line[0]), float(line[1])
+	print(p_random_strings(n, x, dna))
+
+if __name__ == '__main__':
+	main()

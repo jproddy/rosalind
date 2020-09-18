@@ -1,40 +1,29 @@
-from itertools import groupby
-with open("rosalind_kmer.txt") as f:
-    groups = groupby(f, key=lambda x: not x.startswith(">"))
-    d = {}
-    for k,v in groups:
-        if not k:
-            key, val = list(v)[0].rstrip(), "".join(map(str.rstrip,next(groups)[1],""))
-            d[key] = val
-f.close()
+'''
+k-Mer Composition
+http://rosalind.info/problems/kmer/
 
-s = d.values()[0]
+Given: A DNA string s in FASTA format (having length at most 100 kbp).
 
-from itertools import permutations
+Return: The 4-mer composition of s.
+'''
+from utils.parse_fasta import parse_fasta_as_list
+from lexf import lex_kmers
 
-d = 4 # depth
-a = ["A","C","G","T"] * d # alphabet * depth
-perm = permutations(a,d)
-p = list(perm)
-p.sort()
+filename = 'rosalind_kmer.txt'
 
-r = []
+def kmer_composition(dna, alphabet=['A','C','G','T'], k=4):
+	kmers = lex_kmers(alphabet, k)
+	kmer_dict = {}
+	for i in range(len(dna) - k + 1):
+		s = dna[i:i+k]
+		kmer_dict[s] = kmer_dict.get(s, 0) + 1
+	return [kmer_dict.get(kmer, 0) for kmer in kmers]
 
-for i in p:
-	if i not in r:
-		r.append(i)
-qcount = [0] * len(r)
-q = []
+def main():
+	with open(filename) as f:
+		fasta = f.read()
+	dna = parse_fasta_as_list(fasta)[0]
+	print(' '.join([str(i) for i in kmer_composition(dna)]))
 
-for i in r:
-	temp = ""
-	for j in range(len(i)):
-		temp +=i [j]
-	q.append(temp)
-
-
-for i in range(len(s)-3):
-	qcount[q.index(s[i:i+4])] += 1
-
-
-print ' '.join(map(str, qcount))
+if __name__ == '__main__':
+	main()
