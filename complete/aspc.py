@@ -1,27 +1,30 @@
-import operator as op
+'''
+Introduction to Alternative Splicing
+http://rosalind.info/problems/aspc/
+
+Given: Positive integers n and m with 0≤m≤n≤2000.
+
+Return: The sum of combinations C(n,k) for all k satisfying m≤k≤n, modulo 1,000,000. In shorthand, ∑nk=m(nk).
+'''
 from functools import reduce
 
-f = open("rosalind_aspc.txt", "r")
-s = f.read()
-f.close()
+filename = 'rosalind_aspc.txt'
 
-slist = [int(x) for x in s.split(" ")]
+def nCr(n, r):
+	r = min(r, n-r)
+	mult = lambda x, y: x * y
+	num = reduce(mult, range(n-r+1, n+1), 1)
+	denom = reduce(mult, range(1, r+1), 1)
+	return num // denom
 
-n = slist[0]
-m = slist[1]
+def sum_combinations(n, m):
+	return sum(nCr(n, k) for k in range(m, n+1))
 
+def main():
+	with open(filename) as f:
+		line = f.readline().strip()
+	n, m = [int(i) for i in line.split()]
+	print(sum_combinations(n, m) % 1000000)
 
-def ncr(n, r):
-    r = min(r, n-r)
-    numer = reduce(op.mul, range(n, n-r, -1), 1)
-    denom = reduce(op.mul, range(1, r+1), 1)
-    return numer / denom
-
-
-s = 0
-
-for k in range(m, n+1):
-	s += ncr(n, k)
-	s = s % 1000000
-
-print s
+if __name__ == '__main__':
+	main()
