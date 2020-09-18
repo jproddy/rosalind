@@ -1,13 +1,21 @@
-f = open("rosalind_sset.txt", "r")
-s = f.read()
-f.close()
+'''
+Counting Subsets
+http://rosalind.info/problems/sset/
 
-n = int(s.strip())
+Given: A positive integer n (n≤1000).
 
-sset = 1
+Return: The total number of subsets of {1,2,…,n} modulo 1,000,000.
+'''
+filename = 'rosalind_sset.txt'
 
-for i in range(n):
-	sset *= 2
-	sset = sset % 1000000
+def subsets(n):
+	# every element is either in or out of a given subset
+	return 2 ** n
 
-print sset
+def main():
+	with open(filename) as f:
+		n = int(f.readline().strip())
+	print(subsets(n) % 1000000)
+
+if __name__ == '__main__':
+	main()

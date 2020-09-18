@@ -1,19 +1,15 @@
 '''
+Catalan Numbers and RNA Secondary Structures
 http://rosalind.info/problems/cat/
 
 Given: An RNA string s having the same number of occurrences of 'A' as 'U' and the same number of occurrences of 'C' as 'G'. The length of the string is at most 300 bp.
 
 Return: The total number of noncrossing perfect matchings of basepair edges in the bonding graph of s, modulo 1,000,000.
 '''
+from utils.parse_fasta import parse_fasta_as_list
 
-rna = '''\
-UUAUGGGCCCCGGUACUCCGGAUCAUAUGCGCGAGCAUUUAUAUAGCGCACGUGCAUAUA\
-CGAGCCCCAAUAAUUUAUUAGGGUUACGUAAUUAGCGACGUCUCGAGCACGCGCCUUAUA\
-GCUUAAUAAGGUAAAUGCAGCUAAUUUGAAUAUUAGCCGUUAUCAUGAGGCCACCGAUGU\
-CGAAUGCGCUAUAGCUAAUCCGGUUAAUCCCGCGGCGAUAUACAUUCAUGCGAAGCAUGC\
-GCCGUGAGCCGUAGCGCCGUAGCUUGCAAGCUGC\
-'''
-
+filename = 'rosalind_cat.txt'
+memo = {}
 bp = {
 	'A': 'U',
 	'C': 'G',
@@ -21,9 +17,8 @@ bp = {
 	'U': 'A',
 }
 
-memo = {}
-
 def populate_memo():
+	# generate base cases
 	bases = ['A', 'C', 'G', 'U']
 	for i in bases:
 		for j in bases:
@@ -36,8 +31,6 @@ def populate_memo():
 def cat(s):
 	if len(s) == 0:
 		return 1
-	elif len(s) == 1:
-		return 0
 	elif s in memo:
 		pass
 	else:		
@@ -48,11 +41,12 @@ def cat(s):
 		memo[s] = total
 	return memo[s]
 
-
 def main():
+	with open(filename) as f:
+		fasta = f.read()
+	rna = parse_fasta_as_list(fasta)[0]
 	populate_memo()
 	print(cat(rna) % 1000000)
 	
-
 if __name__ == '__main__':
 	main()

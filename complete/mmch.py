@@ -1,20 +1,27 @@
-f = open("rosalind_mmch.txt", "r")
-s = f.read()
-f.close()
+'''
+Maximum Matchings and RNA Secondary Structures
+http://rosalind.info/problems/mmch/
 
-a = s.count("A")
-c = s.count("C")
-g = s.count("G")
-u = s.count("U")
+Given: An RNA string s of length at most 100.
 
-mm=1
+Return: The total possible number of maximum matchings of basepair edges in the bonding graph of s
+'''
+from collections import Counter
+from utils.parse_fasta import parse_fasta_as_list
+from pper import partial_permutations
 
-for i in range(max([a,u])-min([a,u])+1, max([a,u])+1):
-	# print mm
-	mm*=i
+filename = 'rosalind_mmch.txt'
 
-for i in range(max([c,g])-min([c,g])+1, max([c,g])+1):
-	# print mm
-	mm*=i
+def max_matchings(rna):
+	count = Counter(rna)
+	return partial_permutations(max(count['A'], count['U']), min(count['A'], count['U'])) * \
+				partial_permutations(max(count['C'], count['G']), min(count['C'], count['G']))
 
-print mm
+def main():
+	with open(filename) as f:
+		fasta = f.read()
+	rna = parse_fasta_as_list(fasta)[0]
+	print(max_matchings(rna))
+
+if __name__ == '__main__':
+	main()

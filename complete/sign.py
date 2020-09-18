@@ -1,35 +1,36 @@
+'''
+Enumerating Oriented Gene Orderings
+http://rosalind.info/problems/sign/
+
+Given: A positive integer n≤6.
+
+Return: The total number of signed permutations of length n, followed by a list of all such permutations (you may list the signed permutations in any order).
+'''
+import numpy as np
 from itertools import permutations
-import numpy
 
-f = open("rosalind_sign.txt", "r")
-s = f.read()
-f.close()
+filename = 'rosalind_sign.txt'
 
-n = int(s.strip())
+def signed_permutations(n):
+	perms = np.array(list(permutations(range(1, n+1))))
+	signs = []
+	def sign_helper(curr=[]):
+		if len(curr) == n:
+			signs.append(curr.copy())
+		else:
+			for sign in [1, -1]:
+				sign_helper(curr + [sign])
+	sign_helper()
+	signs = np.array(signs)
+	return [p * s for p in perms for s in signs]
 
-perm = permutations(range(1,n+1))
-p = list(perm)
+def main():
+	with open(filename) as f:
+		n = int(f.readline().strip())
+	signed_perms = signed_permutations(n)
+	# print(signed_perms)
+	print(len(signed_perms))
+	print('\n'.join([' '.join(str(i) for i in sp) for sp in signed_perms]))
 
-a = [1] * n + [-1] * n
-aperm = list(permutations(a))
-b = []
-for i in aperm:
-	if i[0:3] not in b:
-		b.append(i[0:3])
-
-print b
-print p
-
-sperm = []
-
-for i in b:
-	for j in p:
-		ij = []
-		for k in range(len(i)):
-			ij.append(i[k]*j[k])
-		sperm.append(ij)
-
-print len(sperm)
-
-for i in range(len(sperm)):
-	print ' '.join(map(str, sperm[i]))
+if __name__ == '__main__':
+	main()
