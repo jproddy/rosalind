@@ -1,36 +1,31 @@
+'''
+Independent Segregation of Chromosomes
+http://rosalind.info/problems/indc/
+
+Given: A positive integer n≤50.
+
+Return: An array A of length 2n in which A[k] represents the common logarithm of the probability that two diploid siblings share at least k of their 2n chromosomes (we do not consider recombination for now).
+'''
 import math
-import operator as op
-from functools import reduce
+from scipy.stats import binom
+from aspc import nCr
 
-def ncr(n, r):
-    r = min(r, n-r)
-    numer = reduce(op.mul, range(n, n-r, -1), 1)
-    denom = reduce(op.mul, range(1, r+1), 1)
-    return numer / denom
+filename = 'rosalind_indc.txt'
 
-f = open("rosalind_indc.txt", "r")
-s = f.read()
-f.close()
-
-n = int(s.strip())
-
-p = math.pow(.5, 2*n)
-print p
-
-z = []
-
-for i in range(1, 2*n+1):
-	z.append(ncr(2*n, i))
-
-for i in range(2 * n):
-	z[i] += sum(z[i+1:2*n])
-
-soln = []
-for i in range(2 * n):
-	soln.append(math.log10(z[i] * p))
-
-print ' '.join(map(str, soln))
+def indc(n):
+	return [math.log10(binom.cdf(i, 2*n, 0.5)) for i in range(2*n-1, -1, -1)]
+	# alternatively, the below gives slightly different numbers at very small values
+	# 	--rounding issues?
+	# combos = [nCr(2*n, i) for i in range(1, 2*n+1)]
+	# cdf = [sum(combos[i:]) for i in range(len(combos))]
+	# power = 0.5 ** (2*n)
+	# return [math.log10(i * power) for i in cdf]
 
 
+def main():
+	with open(filename) as f:
+		n = int(f.readline().strip())
+	print(' '.join([str(i) for i in indc(n)]))
 
-
+if __name__ == '__main__':
+	main()
