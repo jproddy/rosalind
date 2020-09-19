@@ -1,1 +1,1 @@
-some (probably very) suboptimal rosalind.info solutions in python!
+Some solutions for [rosalind.info](http://rosalind.info/about/) bioinformatics problems in Python!
