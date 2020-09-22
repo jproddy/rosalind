@@ -1,7 +1,15 @@
 /incomplete
 
 /complete/tests
+/complete/__pycache__
+
+/complete/utils/__pycache__
+
 /complete/python_village/tests
 
-/complete/__pycache__
-/complete/utils/__pycache__
+/complete/bioinformatics_armory/tests
+/complete/bioinformatics_armory/__pycache__
+/complete/bioinformatics_armory/incomplete
+
+/complete/algorithmic_heights/tests
+/complete/algorithmic_heights/__pycache__
