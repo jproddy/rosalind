@@ -1,17 +1,26 @@
 /incomplete
 
-/complete/tests
-/complete/__pycache__
+/algorithmic_heights/incomplete
+/algorithmic_heights/tests
+/algorithmic_heights/utils
+/algorithmic_heights/__pycache__
 
-/complete/utils/__pycache__
+/bioinformatics_armory/incomplete
+/bioinformatics_armory/tests
+/bioinformatics_armory/utils/__pycache__
+/bioinformatics_armory/__pycache__
 
-/complete/python_village/tests
+/bioinformatics_stronghold/incomplete
+/bioinformatics_stronghold/tests
+/bioinformatics_stronghold/utils/__pycache__
+/bioinformatics_stronghold/__pycache__
 
-/complete/bioinformatics_armory/tests
-/complete/bioinformatics_armory/__pycache__
-/complete/bioinformatics_armory/incomplete
+/bioinformatics_textbook_track/incomplete
+/bioinformatics_textbook_track/tests
+/bioinformatics_textbook_track/utils/__pycache__
+/bioinformatics_textbook_track/__pycache__
 
-/complete/algorithmic_heights/tests
-/complete/algorithmic_heights/__pycache__
-
-/complete/bioinformatics_textbook_track/tests
+/python_village/incomplete
+/python_village/tests
+/python_village/utils/__pycache__
+/python_village/__pycache__
