@@ -7,11 +7,12 @@ Given: Positive integers N (N≤7), m (m≤2N), g (g≤6) and k (k≤2N).
 Return: The probability that in a population of N diploid individuals initially possessing m copies of a dominant allele, we will observe after g generations at least k copies of a recessive allele. Assume the Wright-Fisher model.
 '''
 import numpy as np
+
 from aspc import nCr
 
 filename = 'rosalind_wfmd.txt'
 
-def wr_drift(N, m, g, k):
+def wf_drift(N, m, g, k):
 	dom = m / (2 * N)
 	rec = 1 - dom
 	# calculate distribution of dominant alleles in given generation
@@ -26,7 +27,7 @@ def wr_drift(N, m, g, k):
 def main():
 	with open(filename) as f:
 		N, m, g, k = [int(i) for i in f.readline().strip().split()]
-	print(wr_drift(N, m, g, k))
+	print(wf_drift(N, m, g, k))
 
 if __name__ == '__main__':
 	main()

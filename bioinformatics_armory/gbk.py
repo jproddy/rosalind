@@ -8,10 +8,12 @@ Return: The number of Nucleotide GenBank entries for the given genus that were p
 '''
 from Bio import Entrez
 
+from secret.email import email
+
 filename = 'rosalind_gbk.txt'
 
 def access(genus, start, end):
-	Entrez.email = '' # removed
+	Entrez.email = email
 	handle = Entrez.esearch(db='nucleotide', term=f'"{genus}"[Organism] AND ("{start}"[PDAT] : "{end}"[PDAT])')
 	record = Entrez.read(handle)
 	return record['Count']
