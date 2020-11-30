@@ -30,8 +30,7 @@ def global_alignment(s1, s2, scoring_matrix='BLOSUM62', indel_penalty=5):
 			diag = matrix[r-1, c-1] + sm.loc[s1[c-1], s2[r-1]]
 			matrix[r, c] = max(down, right, diag)
 
-	# backtrack solution--could also keep track of down/right/diag moves
-	# in a separate matrix to avoid some of this
+	# backtrack solution
 	r, c = len(s2), len(s1)
 	s1_aligned = []
 	s2_aligned = []
