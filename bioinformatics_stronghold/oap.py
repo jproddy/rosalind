@@ -21,7 +21,6 @@ def local_alignment(s1, s2, match_score=1, mismatch_penalty=2, indel_penalty=2):
 
 	# fill rest of matrix
 	for r in range(1, len(s2) + 1):
-		print(r)
 		for c in range(1, len(s1) + 1):
 			down = matrix[r-1, c] - indel_penalty
 			right = matrix[r, c-1] - indel_penalty
